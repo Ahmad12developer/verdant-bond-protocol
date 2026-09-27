@@ -27,6 +27,7 @@ import { MigrationSafetyModule } from './migrations/migration-safety.module';
 import { ImpersonationModule } from './impersonation/impersonation.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { FailuresModule } from './failures/failures.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { FailuresModule } from './failures/failures.module';
     ImpersonationModule,
     InvitationsModule,
     FailuresModule,
+    NotificationsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: Rfc7807ExceptionFilter },
