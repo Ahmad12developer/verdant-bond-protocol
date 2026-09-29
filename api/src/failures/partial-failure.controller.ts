@@ -8,8 +8,8 @@ import {
   RejectedOperationExplanation,
 } from './partial-failure.interface';
 import { PartialFailureService } from './partial-failure.service';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { AdminGuard } from '../../common/guards/admin.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { AdminGuard } from '../common/guards/admin.guard';
 
 /**
  * Partial failure dashboard API (issue #266).

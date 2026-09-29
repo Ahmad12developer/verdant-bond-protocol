@@ -146,13 +146,8 @@ export interface SeedDataset {
  * single `now` captured once at the top of this function, so two calls in
  * the same process produce byte-identical output (see `seed.service.spec.ts`).
  */
-export function buildSeedDataset(): SeedDataset {
-  // Rounded to the second (issue #304): several fixtures below derive
-  // timestamps from `now` directly as numbers (not just via `.toISOString()`,
-  // which already truncates to the second). Two calls to this function
-  // milliseconds apart — as the determinism tests make — must still produce
-  // byte-identical output, which a raw `Date.now()` cannot guarantee.
-  const now = Math.floor(Date.now() / 1000) * 1000;
+/** `now` anchors the relative dates; the same `now` always gives the same dataset. */
+export function buildSeedDataset(now: number = Date.now()): SeedDataset {
 
   const users: SeedUser[] = [
     { id: 1, address: 1, role: 'admin', name: 'Protocol Admin' },
