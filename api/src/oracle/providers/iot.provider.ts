@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { OracleProviderAdapter, MeasurementData } from './provider.interface';
-import { ingestSatelliteMeasurement } from '../../../../oracle/satellite-processor';
+import { aggregateIotProject } from '../../../../oracle/iot-aggregator';
 
 @Injectable()
-export class SatelliteProvider implements OracleProviderAdapter {
-  readonly name = 'SatelliteProcessor';
-  readonly methodology = 'REMOTE-SENSING';
+export class IotProvider implements OracleProviderAdapter {
+  readonly name = 'IotSensorNetwork';
+  readonly methodology = 'IOT-SENSORS';
 
   async fetchMeasurement(
     projectId: string,
@@ -24,23 +24,19 @@ export class SatelliteProvider implements OracleProviderAdapter {
         : periodEnd
       : process.env.ORACLE_PERIOD_END || '2025-03-31';
 
-    const baseUrl = process.env.SATELLITE_API_URL;
-    const bearerToken = process.env.SATELLITE_BEARER_TOKEN;
+    const baseUrl = process.env.IOT_API_URL;
+    const deviceIdsStr = process.env.IOT_DEVICE_IDS || 'NBS-SOIL-001,NBS-SOIL-002';
+    const deviceIds = deviceIdsStr.split(',').map((s) => s.trim()).filter(Boolean);
+    const areaHa = Number(process.env.IOT_AREA_HA) || 1250;
 
-    const bboxStr = process.env.SATELLITE_BBOX || '-76.5,-6.2,-76.2,-5.9';
-    const bbox = bboxStr.split(',').map(Number) as [number, number, number, number];
-    const areaHa = Number(process.env.SATELLITE_AREA_HA) || 1250;
-    const baselineNdvi = Number(process.env.SATELLITE_BASELINE_NDVI) || 0.28;
-
-    const report = await ingestSatelliteMeasurement(
+    const report = await aggregateIotProject(
       {
         project_id: projectId,
-        bbox,
+        device_ids: deviceIds,
         area_ha: areaHa,
-        baseline_ndvi: baselineNdvi,
       },
       { periodStart: pStartStr, periodEnd: pEndStr },
-      { ...(baseUrl ? { baseUrl } : {}), ...(bearerToken ? { bearerToken } : {}) },
+      baseUrl ? { baseUrl } : {},
     );
 
     return {
@@ -53,4 +49,3 @@ export class SatelliteProvider implements OracleProviderAdapter {
     };
   }
 }
-
