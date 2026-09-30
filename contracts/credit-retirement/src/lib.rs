@@ -126,7 +126,7 @@ impl CreditRetirement {
             .ok_or(CreditError::NotInitialized)?;
         let accrued: i128 = env.invoke_contract(
             &coupon_engine,
-            &Symbol::new(&env, "accrued_credits"),
+            &Symbol::new(&env, "escrowed_credits"),
             vec![&env, bond_id.into_val(&env), holder.clone().into_val(&env)],
         );
 
